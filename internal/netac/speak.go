@@ -20,6 +20,9 @@ func speak(
 				"failed to write the identity to multicast %s: %v", dest.String(), err)
 		}
 
+		// TODO: logger.
+		fmt.Println("[Speaker] Identity sent.")
+
 		// Sleep before next send.
 		time.Sleep(delay)
 	}

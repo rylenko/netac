@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func print(copies sync.Map, dest io.Writer, delay time.Duration) {
+func fprint(copies sync.Map, dest io.Writer, delay time.Duration) {
 	for {
 		// Print each copy.
 		copyNumber := 1
@@ -17,8 +17,7 @@ func print(copies sync.Map, dest io.Writer, delay time.Duration) {
 				"%d. %s [%s]\n",
 				copyNumber,
 				addrStr.(string),
-				lastSeen.(time.Time).String(),
-			)
+				lastSeen.(time.Time).String())
 
 			copyNumber++
 			return true

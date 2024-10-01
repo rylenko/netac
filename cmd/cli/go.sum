@@ -1,5 +1,5 @@
-github.com/rylenko/netac/internal/netac v0.0.0-20241001080454-da848b744dea h1:D1cfhsb7qzL2D4ifJtV8dc8VTNhK5Spyvzfl4rvJ3Uw=
-github.com/rylenko/netac/internal/netac v0.0.0-20241001080454-da848b744dea/go.mod h1:HzBMeBraxAL0vg+8Wbaj/3Vg/Mxo1vQZ7Ivl25Qoijo=
+github.com/rylenko/netac/internal/netac v0.0.0-20241001094806-ee10ac15b8a4 h1:CDWS8tYRl0B4Ar9Ta1dKq6xoA/Df5RhPtoyUh70CCC0=
+github.com/rylenko/netac/internal/netac v0.0.0-20241001094806-ee10ac15b8a4/go.mod h1:HzBMeBraxAL0vg+8Wbaj/3Vg/Mxo1vQZ7Ivl25Qoijo=
 golang.org/x/net v0.29.0 h1:5ORfpBpCs4HzDYoodCDBbwHzdR5UrLBZ3sOnUJmFoHo=
 golang.org/x/net v0.29.0/go.mod h1:gLkgy8jTGERgjzMic6DS9+SP0ajcu6Xu3Orq/SpETg0=
 golang.org/x/sys v0.25.0 h1:r+8e+loiHxRqhXVl6ML1nO3l1+oFoWbnlu2Ehimmi34=

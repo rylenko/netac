@@ -27,10 +27,13 @@ func listen(
 		})
 
 		// Read data to the buffer.
-		_, _, src, err := packetConn.ReadFrom(buf)
+		n, _, src, err := packetConn.ReadFrom(buf)
 		if err != nil {
 			return fmt.Errorf("failed to read from connection: %v", err)
 		}
+
+		// TODO: logger.
+		fmt.Printf("[Listener] Readed %d bytes.\n", n)
 
 		// Register address if  readed data is equal to identity bytes.
 		if bytes.Equal(buf, identity) {

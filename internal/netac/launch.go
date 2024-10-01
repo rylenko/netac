@@ -64,7 +64,7 @@ func Launch(ifaceName, multicastIPv4 string) error {
 	//
 	// TODO: handle error
 	go listen(copies, packetConn, copyTTL, identity)
-	go print(copies, os.Stdout, printDelay)
+	go fprint(copies, os.Stdout, printDelay)
 
 	// Speak to multicast address.
 	if err := speak(packetConn, multicastAddr, identity, speakDelay); err != nil {

@@ -17,7 +17,7 @@ func speak(
 		// Send the identity to multicast group.
 		if _, err := packetConn.WriteTo(identity, nil, dest); err != nil {
 			return fmt.Errorf(
-				"failed to write the identity to multicast %s: %v", addr.String(), err)
+				"failed to write the identity to multicast %s: %v", dest.String(), err)
 		}
 
 		// Sleep before next send.

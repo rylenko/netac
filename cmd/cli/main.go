@@ -7,6 +7,8 @@ import (
 	"github.com/rylenko/netac/internal/netac"
 )
 
+const help string = "$ netac <interface> <multicast-ipv4>"
+
 func main() {
 	// Validate arguments count.
 	if len(os.Args) != 3 {

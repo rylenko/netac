@@ -13,7 +13,6 @@ import (
 const (
 	// TODO: create config structure to change this parameters
 	copyTTL time.Duration = 10 * time.Second
-	help string = "$ netac <interface> <multicast-ipv4>"
 	multicastTTL int = 2
 	portStr string = "9999"
 	printDelay time.Duration = 4 * time.Second
@@ -25,7 +24,8 @@ var identity []byte = []byte{1, 2, 3, 4, 5, 6, 7, 8}
 
 func Launch(ifaceName, multicastIPv4 string) error {
 	// Resolve multicast address.
-	multicastAddr, err := net.ResolveUDPAddr("udp4", multicastIPv4)
+	multicastAddr, err := net.ResolveUDPAddr(
+		"udp4", multicastIPv4 + ":" + portStr)
 	if err != nil {
 		return fmt.Errorf("failed to resolve multicast %s: %v", multicastIPv4, err)
 	}

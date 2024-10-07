@@ -6,7 +6,7 @@ COPY . .
 
 # Download all dependencies and build a binary.
 RUN go mod download
-RUN go build -o main .
+RUN go build -o main ./cmd/cli
 
 # Run binary with specified interface and multicast address.
 CMD ["./main", "eth0", "224.0.0.1"]

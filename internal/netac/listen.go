@@ -3,41 +3,44 @@ package netac
 import (
 	"bytes"
 	"fmt"
-	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/net/ipv4"
 )
 
-func listen(
-		copies sync.Map,
+func listenForever(
+		copies *Copies,
 		packetConn *ipv4.PacketConn,
 		copyTTL time.Duration,
-		identity []byte) error {
-	// Buffer to read identity bytes.
-	buf := make([]byte, len(identity))
+		appId []byte) error {
+	// Buffer to read identity and UUID bytes.
+	buf := make([]byte, len(appId) + CopyIdBytesLen)
 
 	for {
-		// Delete expired copies.
-		copies.Range(func (addrStr, lastSeen any) bool {
-			if time.Since(lastSeen.(time.Time)) >= copyTTL {
-				copies.Delete(addrStr.(string))
-			}
-			return true
-		})
+		copies.DeleteExpired(copyTTL)
 
 		// Read data to the buffer.
-		n, _, src, err := packetConn.ReadFrom(buf)
+		_, _, src, err := packetConn.ReadFrom(buf)
 		if err != nil {
 			return fmt.Errorf("failed to read from connection: %v", err)
 		}
 
-		// TODO: logger.
-		fmt.Printf("[Listener] Readed %d bytes.\n", n)
-
-		// Register address if  readed data is equal to identity bytes.
-		if bytes.Equal(buf, identity) {
-			copies.Store(src.String(), time.Now())
+		// Validate application identificator.
+		if !bytes.Equal(buf[:len(appId)], appId) {
+			continue
 		}
+
+		// Try to parse copy identificator.
+		var copyId uuid.UUID
+		copyIdBytes := buf[len(appId):len(appId) + CopyIdBytesLen]
+		err = copyId.UnmarshalBinary(copyIdBytes)
+		if err != nil {
+			continue
+		}
+
+		// Store a new copy in the storage.
+		newCopy := NewCopy(src, copyId, time.Now())
+		copies.Register(newCopy)
 	}
 }

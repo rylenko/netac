@@ -1,10 +1,11 @@
 package netac
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
-	"sync"
+	"syscall"
 	"time"
 
 	"golang.org/x/net/ipv4"
@@ -20,22 +21,24 @@ const (
 )
 
 // Bytes to send over UDP to identify application copies.
-var identity []byte = []byte{1, 2, 3, 4, 5, 6, 7, 8}
+var appId []byte = []byte{1, 2, 3, 4, 5, 6, 7, 8}
 
-func Launch(ifaceName, multicastIPv4 string) error {
+func Launch(ctx context.Context, ifaceName, multicastIPv4 string) error {
 	// Resolve multicast address.
 	multicastAddr, err := net.ResolveUDPAddr(
 		"udp4", multicastIPv4 + ":" + portStr)
 	if err != nil {
 		return fmt.Errorf("failed to resolve multicast %s: %v", multicastIPv4, err)
 	}
+
 	// Get interface by accepted name.
 	iface, err := net.InterfaceByName(ifaceName)
 	if err != nil {
 		return fmt.Errorf("failed to get interface by name %s: %v", ifaceName, err)
 	}
+
 	// Listen packets on the constant port.
-	conn, err := net.ListenPacket("udp4", ":" + portStr)
+	conn, err := getListenConfig().ListenPacket(ctx, "udp4", ":" + portStr)
 	if err != nil {
 		return fmt.Errorf("failed to listen packet on port %s: %v", portStr, err)
 	}
@@ -57,18 +60,36 @@ func Launch(ifaceName, multicastIPv4 string) error {
 		return fmt.Errorf("failed to set multicast loopback: %v", err)
 	}
 
-	// Sync storage of all copies.
-	var copies sync.Map
-
+	// Storage of all copies. Keys are address strings, values are copy slices.
+	var copies Copies
 	// Listen incoming packets.
 	//
-	// TODO: handle error
-	go listen(copies, packetConn, copyTTL, identity)
-	go fprint(copies, os.Stdout, printDelay)
-
+	// TODO: handle error, use config struct.
+	go listenForever(&copies, packetConn, copyTTL, appId)
+	// Print copies to writer.
+	//
+	// TODO: use config struct.
+	go printForever(&copies, os.Stdout, printDelay)
 	// Speak to multicast address.
-	if err := speak(packetConn, multicastAddr, identity, speakDelay); err != nil {
+	err = speakForever(packetConn, multicastAddr, appId, speakDelay)
+	if err != nil {
 		return fmt.Errorf("failed to speak to %s: %v", multicastAddr.String(), err)
 	}
 	return nil
+}
+
+func getListenConfig() *net.ListenConfig {
+	var config net.ListenConfig
+
+	// Set controller to enable address reusing.
+	config.Control = func(network, address string, conn syscall.RawConn) error {
+		var err error
+		err = conn.Control(func (fd uintptr) {
+			err = syscall.SetsockoptInt(
+				int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
+		})
+		return err
+	}
+
+	return &config
 }

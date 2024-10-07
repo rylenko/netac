@@ -1,26 +1,36 @@
 package main
 
 import (
+	"context"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/rylenko/netac/internal/netac"
 )
 
-const help string = "$ netac <interface> <multicast-ipv4>"
+const (
+	missingRequiredParamsExitCode int = 1
+)
+
+var (
+	iface *string = flag.String("iface", "eth0", "multicast interface")
+	IP *string = flag.String("ip", "", "multicast IP")
+)
 
 func main() {
-	// Validate arguments count.
-	if len(os.Args) != 3 {
-		log.Fatal(help)
+	flag.Parse()
+
+	// Validate required paremeters.
+	if *IP == "" {
+		fmt.Fprintln(os.Stderr, "Missing required paremeters.\n")
+		flag.Usage()
+		os.Exit(missingRequiredParamsExitCode)
 	}
 
-	// Extract parameters from arguments.
-	ifaceName := os.Args[1]
-	multicastIPv4 := os.Args[2]
-
 	// Launch application based on the accepted parameters.
-	if err := netac.Launch(ifaceName, multicastIPv4); err != nil {
+	if err := netac.Launch(context.Background(), *iface, *IP); err != nil {
 		log.Fatal(err)
 	}
 }

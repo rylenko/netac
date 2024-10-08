@@ -13,9 +13,10 @@ func listenForever(
 		copies *Copies,
 		packetConn *ipv4.PacketConn,
 		copyTTL time.Duration,
-		appId []byte) error {
+		appId string) error {
 	// Buffer to read identity and UUID bytes.
 	buf := make([]byte, len(appId) + CopyIdBytesLen)
+	appIdBytes := []byte(appId)
 
 	for {
 		copies.DeleteExpired(copyTTL)
@@ -27,13 +28,13 @@ func listenForever(
 		}
 
 		// Validate application identificator.
-		if !bytes.Equal(buf[:len(appId)], appId) {
+		if !bytes.Equal(buf[:len(appIdBytes)], appIdBytes) {
 			continue
 		}
 
 		// Try to parse copy identificator.
 		var copyId uuid.UUID
-		copyIdBytes := buf[len(appId):len(appId) + CopyIdBytesLen]
+		copyIdBytes := buf[len(appIdBytes):len(appIdBytes) + CopyIdBytesLen]
 		err = copyId.UnmarshalBinary(copyIdBytes)
 		if err != nil {
 			continue

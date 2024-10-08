@@ -27,7 +27,7 @@ func generateRandomUUIDBytes() (bytes []byte, err error) {
 func speakForever(
 		packetConn *ipv4.PacketConn,
 		dest net.Addr,
-		appId []byte,
+		appId string,
 		delay time.Duration) error {
 	// Generate a new copy identifactor bytes.
 	copyIdBytes, err := generateRandomUUIDBytes()
@@ -36,7 +36,7 @@ func speakForever(
 	}
 
 	// Concatenate application and copy identificators to send to multicast group.
-	buf := append(appId, copyIdBytes...)
+	buf := append([]byte(appId), copyIdBytes...)
 
 	for {
 		// Send the identity to multicast group.

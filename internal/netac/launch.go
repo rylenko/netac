@@ -6,41 +6,29 @@ import (
 	"net"
 	"os"
 	"syscall"
-	"time"
 
 	"golang.org/x/net/ipv4"
 )
 
-const (
-	// TODO: create config structure to change this parameters
-	copyTTL time.Duration = 10 * time.Second
-	multicastTTL int = 2
-	portStr string = "9999"
-	printDelay time.Duration = 4 * time.Second
-	speakDelay time.Duration = 1 * time.Second
-)
-
-// Bytes to send over UDP to identify application copies.
-var appId []byte = []byte{1, 2, 3, 4, 5, 6, 7, 8}
-
-func Launch(ctx context.Context, ifaceName, multicastIPv4 string) error {
+func Launch(ctx context.Context, config *Config) error {
 	// Resolve multicast address.
 	multicastAddr, err := net.ResolveUDPAddr(
-		"udp4", multicastIPv4 + ":" + portStr)
+		"udp4", config.IP + ":" + config.Port)
 	if err != nil {
-		return fmt.Errorf("failed to resolve multicast %s: %v", multicastIPv4, err)
+		return fmt.Errorf("failed to resolve multicast %s: %v", config.IP, err)
 	}
 
 	// Get interface by accepted name.
-	iface, err := net.InterfaceByName(ifaceName)
+	iface, err := net.InterfaceByName(config.IfaceName)
 	if err != nil {
-		return fmt.Errorf("failed to get interface by name %s: %v", ifaceName, err)
+		return fmt.Errorf(
+			"failed to get interface by name %s: %v", config.IfaceName, err)
 	}
 
 	// Listen packets on the constant port.
-	conn, err := getListenConfig().ListenPacket(ctx, "udp4", ":" + portStr)
+	conn, err := getListenConfig().ListenPacket(ctx, "udp4", ":" + config.Port)
 	if err != nil {
-		return fmt.Errorf("failed to listen packet on port %s: %v", portStr, err)
+		return fmt.Errorf("failed to listen packet on port %s: %v", config.Port, err)
 	}
 	defer conn.Close()
 
@@ -52,8 +40,8 @@ func Launch(ctx context.Context, ifaceName, multicastIPv4 string) error {
 			"failed to join multicast %s: %v", multicastAddr.String(), err)
 	}
 	// Set multicast TTL for outcoming packets.
-	if err := packetConn.SetMulticastTTL(multicastTTL); err != nil {
-		return fmt.Errorf("failed to set multicast TTL %d: %v", multicastTTL, err)
+	if err := packetConn.SetMulticastTTL(config.PacketTTL); err != nil {
+		return fmt.Errorf("failed to set packet TTL %d: %v", config.PacketTTL, err)
 	}
 	// Set multicast loopback.
 	if err := packetConn.SetMulticastLoopback(true); err != nil {
@@ -65,13 +53,13 @@ func Launch(ctx context.Context, ifaceName, multicastIPv4 string) error {
 	// Listen incoming packets.
 	//
 	// TODO: handle error, use config struct.
-	go listenForever(&copies, packetConn, copyTTL, appId)
+	go listenForever(&copies, packetConn, config.CopyTTL, config.AppId)
 	// Print copies to writer.
 	//
 	// TODO: use config struct.
-	go printForever(&copies, os.Stdout, printDelay)
+	go printForever(&copies, os.Stdout, config.PrintDelay)
 	// Speak to multicast address.
-	err = speakForever(packetConn, multicastAddr, appId, speakDelay)
+	err = speakForever(packetConn, multicastAddr, config.AppId, config.SpeakDelay)
 	if err != nil {
 		return fmt.Errorf("failed to speak to %s: %v", multicastAddr.String(), err)
 	}

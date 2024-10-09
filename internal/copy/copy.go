@@ -17,7 +17,7 @@ type Copy struct {
 	lastSeen time.Time
 }
 
-func (copy *Copy) Equal(other *copy) bool {
+func (copy *Copy) Equal(other *Copy) bool {
 	return copy.address.String() == other.address.String() &&
 		copy.id == other.id
 }
@@ -26,7 +26,7 @@ func (copy *Copy) Expired(ttl time.Duration) bool {
 	return time.Since(copy.lastSeen) >= ttl
 }
 
-func (copy *Copy) Extend(other *copy) {
+func (copy *Copy) Extend(other *Copy) {
 	copy.lastSeen = other.lastSeen
 }
 

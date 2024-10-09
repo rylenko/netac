@@ -106,7 +106,7 @@ func (launcher *IPv4Launcher) listenForever(
 
 		// Store a new copy in the storage.
 		copy := copy.NewCopy(src, copyId, time.Now())
-		copies.register(copy)
+		copies.Register(copy)
 	}
 }
 

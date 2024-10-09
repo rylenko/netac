@@ -1,7 +1,7 @@
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/rylenko/netac/internal/netac v0.0.0-20241009201619-e9b0b41e2b36 h1:Hfe8hM8GyxNMNf1VL0Vl1/i/gKDiYCVfajDCz0KZ9xs=
-github.com/rylenko/netac/internal/netac v0.0.0-20241009201619-e9b0b41e2b36/go.mod h1:LpCKj2scPk0TWXz84P13kA5yS295JGAO6WFiAwkbBu8=
+github.com/rylenko/netac/internal/netac v0.0.0-20241009212432-2fecf73d9762 h1:ZfKYrr8iJY9jdXw8KcriCZJYarbGGz8z4oWXInWvb1Q=
+github.com/rylenko/netac/internal/netac v0.0.0-20241009212432-2fecf73d9762/go.mod h1:LpCKj2scPk0TWXz84P13kA5yS295JGAO6WFiAwkbBu8=
 golang.org/x/net v0.30.0 h1:AcW1SDZMkb8IpzCdQUaIq2sP4sZ4zw+55h6ynffypl4=
 golang.org/x/net v0.30.0/go.mod h1:2wGyMJ5iFasEhkwi13ChkO/t1ECNC4X4eBKkVFyYFlU=
 golang.org/x/sys v0.26.0 h1:KHjCJyddX0LoSTb3J+vWpupP9p0oznkqVk/IfjymZbo=

@@ -17,7 +17,7 @@ func (copies *Copies) DeleteExpired(ttl time.Duration) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 
-	copies.inner = slices.DeleteFunc(copies.inner, func(copy *copy) bool {
+	copies.inner = slices.DeleteFunc(copies.inner, func(copy *Copy) bool {
 		return copy.Expired(ttl)
 	})
 }

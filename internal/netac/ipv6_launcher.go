@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/rylenko/netac/internal/copy"
 	"golang.org/x/net/ipv6"
 )
 

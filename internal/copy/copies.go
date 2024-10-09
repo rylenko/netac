@@ -1,4 +1,4 @@
-package netac
+package copy
 
 import (
 	"fmt"
@@ -17,12 +17,12 @@ func (copies *Copies) DeleteExpired(ttl time.Duration) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 
-	copies.inner = slices.DeleteFunc(copies.inner, func(copy *Copy) bool {
+	copies.inner = slices.DeleteFunc(copies.inner, func(copy *copy) bool {
 		return copy.Expired(ttl)
 	})
 }
 
-func (copies *Copies) Print(dest io.Writer) {
+func (copies *Copies) print(dest io.Writer) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 
@@ -35,7 +35,7 @@ func (copies *Copies) Print(dest io.Writer) {
 	}
 }
 
-func (copies *Copies) Register(newCopy *Copy) {
+func (copies *Copies) register(newCopy *Copy) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 

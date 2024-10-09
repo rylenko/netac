@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/rylenko/netac/internal/copy"
 	"golang.org/x/net/ipv4"
 )
 
@@ -104,8 +105,8 @@ func (launcher *IPv4Launcher) listenForever(
 		}
 
 		// Store a new copy in the storage.
-		newCopy := NewCopy(src, copyId, time.Now())
-		copies.Register(newCopy)
+		copy := copy.NewCopy(src, copyId, time.Now())
+		copies.register(copy)
 	}
 }
 

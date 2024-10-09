@@ -143,34 +143,3 @@ func (launcher *Launcher) speakForever(
 func NewIPv4Launcher(config *Config) *IPv4Launcher {
 	return &IPv4Launcher{config: config}
 }
-
-func generateRandomUUIDBytes() (bytes []byte, err error) {
-	// Generate a new copy identifactor.
-	id, err := uuid.NewRandom()
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate a new identificator: %v", err)
-	}
-
-	// Marshal identificator to bytes.
-	idBytes, err := id.MarshalBinary()
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal identificator to bytes: %v", err)
-	}
-	return idBytes, nil
-}
-
-func getListenConfig() *net.ListenConfig {
-	var config net.ListenConfig
-
-	// Set controller to enable address reusing.
-	config.Control = func(network, address string, conn syscall.RawConn) error {
-		var err error
-		err = conn.Control(func (fd uintptr) {
-			err = syscall.SetsockoptInt(
-				int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
-		})
-		return err
-	}
-
-	return &config
-}

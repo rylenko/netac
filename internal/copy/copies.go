@@ -22,7 +22,7 @@ func (copies *Copies) DeleteExpired(ttl time.Duration) {
 	})
 }
 
-func (copies *Copies) print(dest io.Writer) {
+func (copies *Copies) Print(dest io.Writer) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 
@@ -35,7 +35,7 @@ func (copies *Copies) print(dest io.Writer) {
 	}
 }
 
-func (copies *Copies) register(newCopy *Copy) {
+func (copies *Copies) Register(newCopy *Copy) {
 	copies.mutex.Lock()
 	defer copies.mutex.Unlock()
 

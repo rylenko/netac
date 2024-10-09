@@ -59,7 +59,7 @@ func (launcher *IPv6Launcher) Launch(ctx context.Context) error {
 	}
 
 	// Storage of all copies. Keys are address strings, values are copy slices.
-	var copies Copies
+	var copies copy.Copies
 	// Listen incoming packets.
 	//
 	// TODO: handle error, use config struct.
@@ -76,7 +76,7 @@ func (launcher *IPv6Launcher) Launch(ctx context.Context) error {
 }
 
 func (launcher *IPv6Launcher) listenForever(
-		copies *Copies, packetConn *ipv6.PacketConn) error {
+		copies *copy.Copies, packetConn *ipv6.PacketConn) error {
 	appIdBytes := []byte(launcher.config.AppId)
 
 	// Buffer to read identity and UUID bytes.
@@ -105,12 +105,13 @@ func (launcher *IPv6Launcher) listenForever(
 		}
 
 		// Store a new copy in the storage.
-		newCopy := NewCopy(src, copyId, time.Now())
+		newCopy := copy.NewCopy(src, copyId, time.Now())
 		copies.Register(newCopy)
 	}
 }
 
-func (launcher *IPv6Launcher) printForever(copies *Copies, writer io.Writer) {
+func (launcher *IPv6Launcher) printForever(
+		copies *copy.Copies, writer io.Writer) {
 	for {
 		copies.Print(writer)
 		time.Sleep(launcher.config.PrintDelay)

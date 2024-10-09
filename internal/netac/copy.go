@@ -11,8 +11,6 @@ import (
 
 // TODO: Add tests everywhere
 
-const CopyIdBytesLen int = 16
-
 type Copy struct {
 	address net.Addr
 	id uuid.UUID

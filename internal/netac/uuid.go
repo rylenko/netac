@@ -6,6 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const uuidBytesLen int = 16
+
 func generateRandomUUIDBytes() (bytes []byte, err error) {
 	// Generate a new copy identifactor.
 	id, err := uuid.NewRandom()

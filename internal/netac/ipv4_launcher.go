@@ -79,7 +79,7 @@ func (launcher *IPv4Launcher) listenForever(
 	appIdBytes := []byte(launcher.config.AppId)
 
 	// Buffer to read identity and UUID bytes.
-	buf := make([]byte, len(appIdBytes) + CopyIdBytesLen)
+	buf := make([]byte, len(appIdBytes) + uuidBytesLen)
 
 	for {
 		copies.DeleteExpired(launcher.config.CopyTTL)
@@ -97,7 +97,7 @@ func (launcher *IPv4Launcher) listenForever(
 
 		// Try to parse copy identificator.
 		var copyId uuid.UUID
-		copyIdBytes := buf[len(appIdBytes):len(appIdBytes) + CopyIdBytesLen]
+		copyIdBytes := buf[len(appIdBytes):len(appIdBytes) + uuidBytesLen]
 		err = copyId.UnmarshalBinary(copyIdBytes)
 		if err != nil {
 			continue

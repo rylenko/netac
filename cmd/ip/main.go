@@ -47,7 +47,12 @@ func main() {
 		*iface, *ip, *port, *appId, *packetTTL, *copyTTL, *printDelay, *speakDelay)
 
 	// Launch application based on the built config.
-	if err := netac.Launch(context.Background(), config); err != nil {
+	var factory netac.IPLauncherFactory
+	launcher, err := factory.Create(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := launcher.Launch(context.Background()); err != nil {
 		log.Fatal(err)
 	}
 }

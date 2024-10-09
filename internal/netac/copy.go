@@ -9,6 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// TODO: Add tests everywhere
+
 const CopyIdBytesLen int = 16
 
 type Copy struct {

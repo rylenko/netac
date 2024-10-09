@@ -7,7 +7,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"syscall"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +20,7 @@ type IPv6Launcher struct {
 func (launcher *IPv6Launcher) Launch(ctx context.Context) error {
 	// Resolve multicast address.
 	multicastAddr, err := net.ResolveUDPAddr(
-		"udp6", "[" + launcher.config.IP + "]:" + laucher.config.Port)
+		"udp6", "[" + launcher.config.IP + "]:" + launcher.config.Port)
 	if err != nil {
 		return fmt.Errorf(
 			"failed to resolve multicast %s: %v", launcher.config.IP, err)
@@ -84,7 +83,7 @@ func (launcher *IPv6Launcher) listenForever(
 	buf := make([]byte, len(appIdBytes) + CopyIdBytesLen)
 
 	for {
-		copies.DeleteExpired(copyTTL)
+		copies.DeleteExpired(launcher.config.CopyTTL)
 
 		// Read data to the buffer.
 		_, _, src, err := packetConn.ReadFrom(buf)
@@ -139,4 +138,8 @@ func (launcher *IPv6Launcher) speakForever(
 		// Sleep before next send.
 		time.Sleep(launcher.config.SpeakDelay)
 	}
+}
+
+func NewIPv6Launcher(config *Config) *IPv6Launcher {
+	return &IPv6Launcher{config: config}
 }

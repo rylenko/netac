@@ -48,10 +48,7 @@ func main() {
 
 	// Launch application based on the built config.
 	var factory netac.IPLauncherFactory
-	launcher, err := factory.Create(config)
-	if err != nil {
-		log.Fatal(err)
-	}
+	launcher := factory.Create(config)
 	if err := launcher.Launch(context.Background()); err != nil {
 		log.Fatal(err)
 	}

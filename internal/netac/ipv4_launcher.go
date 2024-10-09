@@ -7,7 +7,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"syscall"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +20,7 @@ type IPv4Launcher struct {
 func (launcher *IPv4Launcher) Launch(ctx context.Context) error {
 	// Resolve multicast address.
 	multicastAddr, err := net.ResolveUDPAddr(
-		"udp4", launcher.config.IP + ":" + laucher.config.Port)
+		"udp4", launcher.config.IP + ":" + launcher.config.Port)
 	if err != nil {
 		return fmt.Errorf(
 			"failed to resolve multicast %s: %v", launcher.config.IP, err)
@@ -83,7 +82,7 @@ func (launcher *IPv4Launcher) listenForever(
 	buf := make([]byte, len(appIdBytes) + CopyIdBytesLen)
 
 	for {
-		copies.DeleteExpired(copyTTL)
+		copies.DeleteExpired(launcher.config.CopyTTL)
 
 		// Read data to the buffer.
 		_, _, src, err := packetConn.ReadFrom(buf)
@@ -110,14 +109,14 @@ func (launcher *IPv4Launcher) listenForever(
 	}
 }
 
-func (launcher *Launcher) printForever(copies *Copies, writer io.Writer) {
+func (launcher *IPv4Launcher) printForever(copies *Copies, writer io.Writer) {
 	for {
 		copies.Print(writer)
 		time.Sleep(launcher.config.PrintDelay)
 	}
 }
 
-func (launcher *Launcher) speakForever(
+func (launcher *IPv4Launcher) speakForever(
 		packetConn *ipv4.PacketConn, dest net.Addr) error {
 	// Generate a new copy identifactor bytes.
 	copyIdBytes, err := generateRandomUUIDBytes()

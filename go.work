@@ -3,5 +3,8 @@ go 1.22.5
 use (
 	./cmd/cli
 	./internal/copy
-	./internal/netac
+	./internal/launcher
+	./internal/listener
+	./internal/printer
+	./internal/speaker
 )

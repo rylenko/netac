@@ -11,6 +11,8 @@ import (
 
 // TODO: Add tests everywhere
 
+const IdBytesLen int = 16
+
 type Copy struct {
 	address net.Addr
 	id uuid.UUID
@@ -30,13 +32,14 @@ func (copy *Copy) Extend(other *Copy) {
 	copy.lastSeen = other.lastSeen
 }
 
-func (copy *Copy) Print(dest io.Writer) {
-	fmt.Fprintf(
+func (copy *Copy) Print(dest io.Writer) error {
+	_, err := fmt.Fprintf(
 		dest,
 		"%s | %s | %s",
 		copy.address.String(),
 		copy.id.String(),
 		copy.lastSeen.Format(time.TimeOnly))
+	return err
 }
 
 func NewCopy(address net.Addr, id uuid.UUID, lastSeen time.Time) *Copy {

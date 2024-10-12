@@ -8,7 +8,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/rylenko/netac/internal/netac"
+	"github.com/rylenko/netac/internal/launcher"
+	"github.com/rylenko/netac/internal/listener"
+	"github.com/rylenko/netac/internal/printer"
+	"github.com/rylenko/netac/internal/speaker"
 )
 
 const (
@@ -46,10 +49,21 @@ func main() {
 	config := netac.NewConfig(
 		*iface, *ip, *port, *appId, *packetTTL, *copyTTL, *printDelay, *speakDelay)
 
-	// Launch application based on the built config.
-	var factory netac.IPLauncherFactory
-	launcher := factory.Create(config)
-	if err := launcher.Launch(context.Background()); err != nil {
+	var (
+		// Create factory instances.
+		listenerFactory listener.IPFactory
+		speakerFactory speaker.IPFactory
+		launcherFactory launcher.IPFactory
+	)
+
+	// Create a new instance of printer.
+	printerImpl := printer.NewDelayed(*printDelay)
+
+	// Get and run launcher based on the built config.
+	launcherImpl := launcher.Create(config)
+	err := launcherImpl.Launch(
+		context.Background(), listenerFactory, speakerFactory, printerImpl)
+	if err != nil {
 		log.Fatal(err)
 	}
 }

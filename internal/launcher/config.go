@@ -10,7 +10,6 @@ type Config struct {
 
 	PacketTTL int
 	CopyTTL time.Duration
-	PrintDelay time.Duration
 	SpeakDelay time.Duration
 }
 

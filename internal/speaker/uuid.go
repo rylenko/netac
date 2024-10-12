@@ -1,12 +1,10 @@
-package netac
+package speaker
 
 import (
 	"fmt"
 
 	"github.com/google/uuid"
 )
-
-const uuidBytesLen int = 16
 
 func generateRandomUUIDBytes() (bytes []byte, err error) {
 	// Generate a new copy identifactor.

@@ -35,6 +35,6 @@ func NewIPv4(conn *ipv4.PacketConn) (speaker *IPv4, err error) {
 		return nil, fmt.Errorf("failed to generate UUID bytes: %v", err)
 	}
 
-	speaker := &IPv4{idBytes: idBytes, conn: conn}
+	speaker = &IPv4{idBytes: idBytes, conn: conn}
 	return speaker, nil
 }

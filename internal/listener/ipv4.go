@@ -2,6 +2,7 @@ package listener
 
 import (
 	"bytes"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ type IPv4 struct {
 	conn *ipv4.PacketConn
 }
 
-func (listener *IPv4) Listen(
+func (listener *IPv4) ListenForever(
 		copies *copy.Copies, copyTTL time.Duration, appId []byte) error {
 	// Buffer to read application identity and UUID bytes.
 	buf := make([]byte, len(appId) + copy.IdBytesLen)

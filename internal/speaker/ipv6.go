@@ -35,6 +35,6 @@ func NewIPv6(conn *ipv6.PacketConn) (speaker *IPv6, err error) {
 		return nil, fmt.Errorf("failed to generate UUID bytes: %v", err)
 	}
 
-	speaker := &IPv6{idBytes: idBytes, conn: conn}
+	speaker = &IPv6{idBytes: idBytes, conn: conn}
 	return speaker, nil
 }

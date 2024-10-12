@@ -1,4 +1,4 @@
-module github.com/rylenko/netac/internal/speak
+module github.com/rylenko/netac/internal/speaker
 
 go 1.22.5
 

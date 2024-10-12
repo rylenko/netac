@@ -16,7 +16,7 @@ type Config struct {
 func NewConfig(
 		ifaceName, ip, port, appId string,
 		packetTTL int,
-		copyTTL, printDelay, speakDelay time.Duration) *Config {
+		copyTTL, speakDelay time.Duration) *Config {
 	return &Config {
 		IfaceName: ifaceName,
 		IP: ip,
@@ -24,7 +24,6 @@ func NewConfig(
 		AppId: appId,
 		PacketTTL: packetTTL,
 		CopyTTL: copyTTL,
-		PrintDelay: printDelay,
 		SpeakDelay: speakDelay,
 	}
 }

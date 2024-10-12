@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/rylenko/netac/internal/copy"
 	"github.com/rylenko/netac/internal/listener"
@@ -22,8 +23,8 @@ func (launcher *IPv6) Launch(
 		speakerFactory speaker.Factory,
 		printerImpl printer.Printer) error {
 	// Try to resolve multicast address.
-	addrStr := launcher.config.IP + ":" + launcher.config.Port
-	multicastAddr, err := net.ResolveUDPAddr("udp4", addrStr)
+	addrStr := "[" + launcher.config.IP + "]:" + launcher.config.Port
+	multicastAddr, err := net.ResolveUDPAddr("udp6", addrStr)
 	if err != nil {
 		return fmt.Errorf("failed to resolve address %s: %v", addrStr, err)
 	}
@@ -37,7 +38,7 @@ func (launcher *IPv6) Launch(
 
 	// Listen packets on the accepted port.
 	conn, err := getListenConfig().
-		ListenPacket(ctx, "udp4", ":" + launcher.config.Port)
+		ListenPacket(ctx, "udp6", "[::]:" + launcher.config.Port)
 	if err != nil {
 		return fmt.Errorf(
 			"failed to listen packet on port %s: %v", launcher.config.Port, err)
@@ -50,7 +51,8 @@ func (launcher *IPv6) Launch(
 		return fmt.Errorf("failed to join multicast %s: %v", addrStr, err)
 	}
 	// Set multicast packets hop limit.
-	if err := packetConn.SetMulticastHopLimit(launcher.config.PacketTTL); err != nil {
+	err = packetConn.SetMulticastHopLimit(launcher.config.PacketTTL)
+	if err != nil {
 		return fmt.Errorf(
 			"failed to set hop limit %d: %v", launcher.config.PacketTTL, err)
 	}
@@ -65,16 +67,22 @@ func (launcher *IPv6) Launch(
 	// Get and run listener implementation.
 	//
 	// TODO: handle errors
-	listener := listenerFactory.Create(packetConn)
+	listener, err := listenerFactory.Create(packetConn)
+	if err != nil {
+		return fmt.Errorf("failed to create listener: %v", err)
+	}
 	go listener.ListenForever(
-		&copies, launcher.config.CopyTTL, launcher.config.AppId)
+		&copies, launcher.config.CopyTTL, []byte(launcher.config.AppId))
 
 	// Get and run speaker implementation.
 	//
 	// TODO: handle errors
-	speaker := speakerFactory.Create(packetConn)
+	speaker, err := speakerFactory.Create(packetConn)
+	if err != nil {
+		return fmt.Errorf("failed to create speaker: %v", err)
+	}
 	go speaker.SpeakForever(
-		multicastAddr, launcher.config.AppId, launcher.config.SpeakDelay)
+		multicastAddr, []byte(launcher.config.AppId), launcher.config.SpeakDelay)
 
 	// Print copies to standard output.
 	if err := printerImpl.PrintForever(&copies, os.Stdout); err != nil {

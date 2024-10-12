@@ -46,8 +46,8 @@ func main() {
 	}
 
 	// Build config using parsed arguments.
-	config := netac.NewConfig(
-		*iface, *ip, *port, *appId, *packetTTL, *copyTTL, *printDelay, *speakDelay)
+	config := launcher.NewConfig(
+		*iface, *ip, *port, *appId, *packetTTL, *copyTTL, *speakDelay)
 
 	var (
 		// Create factory instances.
@@ -60,9 +60,9 @@ func main() {
 	printerImpl := printer.NewDelayed(*printDelay)
 
 	// Get and run launcher based on the built config.
-	launcherImpl := launcher.Create(config)
+	launcherImpl := launcherFactory.Create(config)
 	err := launcherImpl.Launch(
-		context.Background(), listenerFactory, speakerFactory, printerImpl)
+		context.Background(), &listenerFactory, &speakerFactory, printerImpl)
 	if err != nil {
 		log.Fatal(err)
 	}

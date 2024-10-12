@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/rylenko/netac/internal/copy"
 	"github.com/rylenko/netac/internal/listener"
@@ -65,16 +66,22 @@ func (launcher *IPv4) Launch(
 	// Get and run listener implementation.
 	//
 	// TODO: handle errors
-	listener := listenerFactory.Create(packetConn)
+	listener, err := listenerFactory.Create(packetConn)
+	if err != nil {
+		return fmt.Errorf("failed to create listener: %v", err)
+	}
 	go listener.ListenForever(
-		&copies, launcher.config.CopyTTL, launcher.config.AppId)
+		&copies, launcher.config.CopyTTL, []byte(launcher.config.AppId))
 
 	// Get and run speaker implementation.
 	//
 	// TODO: handle errors
-	speaker := speakerFactory.Create(packetConn)
+	speaker, err := speakerFactory.Create(packetConn)
+	if err != nil {
+		return fmt.Errorf("failed to create speaker: %v", err)
+	}
 	go speaker.SpeakForever(
-		multicastAddr, launcher.config.AppId, launcher.config.SpeakDelay)
+		multicastAddr, []byte(launcher.config.AppId), launcher.config.SpeakDelay)
 
 	// Print copies to standard output.
 	if err := printerImpl.PrintForever(&copies, os.Stdout); err != nil {

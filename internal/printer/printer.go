@@ -7,5 +7,5 @@ import (
 )
 
 type Printer interface {
-	PrintForever(copies *copy.Copies, writer io.Writer) error
+	PrintForever(copies copy.Copies, writer io.Writer) error
 }

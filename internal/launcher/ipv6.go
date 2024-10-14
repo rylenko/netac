@@ -62,7 +62,7 @@ func (launcher *IPv6) Launch(
 	}
 
 	// Create a storage of all copies.
-	var copies copy.Copies
+	var copies copy.CopiesImpl
 
 	// Get and run listener implementation.
 	//

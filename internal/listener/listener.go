@@ -7,5 +7,5 @@ import (
 )
 
 type Listener interface {
-	ListenForever(copies *copy.Copies, copyTTL time.Duration, appId []byte) error
+	ListenForever(copies copy.Copies, copyTTL time.Duration, appId []byte) error
 }
